@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond The Classroom with MayorCity — Registration</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Monthly Edition</div>
+    <h1>Beyond The Classroom</h1>
+    <p>with MayorCity</p>
+  </header>
+
+  <img id="banner" class="banner" alt="Edition banner" style="display:none;">
+
+  <div class="card">
+    <div class="status-row">
+      <h2 id="editionName">Loading…</h2>
+      <span id="statusPill" class="pill">—</span>
+    </div>
+    <div class="tally" id="tally"></div>
+    <div class="tally-label" id="tallyLabel"></div>
+  </div>
+
+  <div class="card">
+    <form id="regForm">
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" required autocomplete="name">
+
+      <label for="email">Email address</label>
+      <input type="email" id="email" required autocomplete="email">
+
+      <label for="phone">Phone number</label>
+      <input type="tel" id="phone" required autocomplete="tel">
+
+      <label for="photo">Your photo (for your ticket)</label>
+      <input type="file" id="photo" accept="image/*">
+      <div class="hint">JPG or PNG, under 5MB. Optional but recommended.</div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">Register &amp; get my ticket</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <p class="footer-note">Already registered but missed your download? <a href="/lookup.html">Re-download your ticket</a>.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/register.js"></script>
+</body>
+</html>

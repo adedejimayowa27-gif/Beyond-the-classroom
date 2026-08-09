@@ -1,0 +1,10 @@
+{
+  "name": "beyond-the-classroom-tickets",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Registration + PDF ticketing site for Beyond The Classroom with MayorCity",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "pdf-lib": "^1.17.1"
+  }
+}

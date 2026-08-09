@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Re-download your ticket</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Beyond The Classroom</div>
+    <h1>Find my ticket</h1>
+    <p>Enter the ticket code you received when you registered.</p>
+  </header>
+
+  <div class="card">
+    <form id="lookupForm">
+      <label for="code">Ticket code</label>
+      <input type="text" id="code" placeholder="BTC-XXXXXXXX" required style="text-transform:uppercase;">
+      <button type="submit" class="btn-primary">Download ticket</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <p class="footer-note"><a href="/">Back to registration</a></p>
+</div>
+
+<script>
+document.getElementById('lookupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const code = document.getElementById('code').value.trim();
+  const msg = document.getElementById('message');
+  msg.innerHTML = '';
+
+  const res = await fetch('/api/ticket?code=' + encodeURIComponent(code));
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    msg.innerHTML = `<div class="message error">${body.error || 'Ticket not found.'}</div>`;
+    return;
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ticket-${code}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  msg.innerHTML = `<div class="message success">Ticket downloading now.</div>`;
+});
+</script>
+</body>
+</html>

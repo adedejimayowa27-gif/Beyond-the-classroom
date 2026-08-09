@@ -1,0 +1,224 @@
+:root {
+  --ink: #1b2a4a;
+  --ink-soft: #2a3d63;
+  --gold: #c89b3c;
+  --gold-soft: #e2c374;
+  --paper: #f7f5f0;
+  --paper-line: #e4e0d6;
+  --muted: #6b6f7a;
+  --good: #2f7a4f;
+  --bad: #b1402f;
+  --radius: 10px;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+.wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+header.masthead {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+header.masthead .eyebrow {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+header.masthead h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 30px;
+  margin: 6px 0 2px;
+  color: var(--ink);
+}
+
+header.masthead p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.banner {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--paper-line);
+  margin-bottom: 20px;
+  background: var(--ink-soft);
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-row h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.pill.open { background: #e6f2ea; color: var(--good); }
+.pill.closed { background: #f5e6e3; color: var(--bad); }
+.pill.done { background: #eee; color: var(--muted); }
+
+/* Roll-call tally — one mark per registered spot in the current batch of 10 */
+.tally {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 10px 0 4px;
+}
+.tally .mark {
+  width: 22px;
+  height: 28px;
+  border-radius: 4px;
+  border: 2px solid var(--paper-line);
+  background: #fff;
+}
+.tally .mark.filled {
+  background: var(--gold);
+  border-color: var(--gold-soft);
+}
+.tally-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 16px 0 6px;
+  color: var(--ink);
+}
+label:first-of-type { margin-top: 0; }
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #d3d0c6;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+  color: var(--ink);
+}
+input:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+input[type="file"] {
+  font-size: 14px;
+}
+
+.hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 13px 20px;
+}
+
+.btn-primary {
+  width: 100%;
+  margin-top: 22px;
+  background: var(--ink);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--ink-soft); }
+.btn-primary:disabled { background: #b7b9bf; cursor: not-allowed; }
+
+.btn-secondary {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--paper-line);
+}
+
+.btn-danger {
+  background: #fff;
+  color: var(--bad);
+  border: 1px solid #e6c9c3;
+}
+
+.message {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 16px;
+}
+.message.error { background: #f5e6e3; color: var(--bad); }
+.message.success { background: #e6f2ea; color: var(--good); }
+.message.info { background: #eef1f6; color: var(--ink-soft); }
+
+.footer-note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 28px;
+}
+
+/* --- Admin --- */
+.reg-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--paper-line);
+  font-size: 14px;
+  gap: 10px;
+}
+.reg-row:last-child { border-bottom: none; }
+.reg-row .code { font-family: monospace; color: var(--muted); }
+
+.edition-item {
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.edition-item h3 { margin: 0 0 4px; }
+.edition-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.edition-actions button { flex: 1; min-width: 140px; }
