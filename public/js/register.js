@@ -11,6 +11,8 @@ const els = {
   submitBtn: document.getElementById('submitBtn'),
   message: document.getElementById('message'),
   photo: document.getElementById('photo'),
+  photoPreview: document.getElementById('photoPreview'),
+  department: document.getElementById('department'),
   website: document.getElementById('website'),
   waitlistCard: document.getElementById('waitlistCard'),
   waitlistForm: document.getElementById('waitlistForm'),
@@ -51,63 +53,98 @@ function attachCopyButtons() {
   });
 }
 
-async function loadEdition() {
-  const { data: edition, error } = await supabaseClient
-    .from('editions')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
-
-  if (error || !edition) {
-    els.editionName.textContent = 'No edition available yet';
-    els.statusPill.textContent = 'Check back soon';
-    els.submitBtn.disabled = true;
-    els.waitlistCard.style.display = 'none';
+// Live preview of the photo the applicant selected, shown big on the page
+// itself (not just baked into the PDF later).
+els.photo.addEventListener('change', () => {
+  const file = els.photo.files[0];
+  if (!file) {
+    els.photoPreview.style.display = 'none';
+    els.photoPreview.src = '';
     return;
   }
+  const url = URL.createObjectURL(file);
+  els.photoPreview.src = url;
+  els.photoPreview.style.display = 'block';
+});
 
-  currentEdition = edition;
-  els.editionName.textContent = edition.name;
+// Best-effort: point the social-preview image at the current edition's
+// banner so a shared link reflects whatever the admin uploaded. Note this
+// only affects the tag in the live DOM — most chat apps read the raw HTML
+// before any JavaScript runs, so for a guaranteed preview image, see the
+// README note about public/og-banner.png.
+function updateOgImage(url) {
+  if (!url) return;
+  const tag = document.querySelector('meta[property="og:image"]');
+  if (tag) tag.setAttribute('content', url);
+}
 
-  if (edition.banner_url) {
-    els.banner.src = edition.banner_url;
-    els.banner.style.display = 'block';
-  }
+async function loadEdition() {
+  try {
+    const { data: edition, error } = await supabaseClient
+      .from('editions')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
 
-  const { count } = await supabaseClient
-    .from('registrations')
-    .select('id', { count: 'exact', head: true })
-    .eq('edition_id', edition.id)
-    .eq('batch_number', edition.current_batch);
+    if (error || !edition) {
+      els.editionName.textContent = 'No edition available yet';
+      els.statusPill.textContent = 'Check back soon';
+      els.submitBtn.disabled = true;
+      els.waitlistCard.style.display = 'none';
+      return;
+    }
 
-  const filled = count || 0;
-  renderTally(filled, edition.batch_size);
+    currentEdition = edition;
+    els.editionName.textContent = edition.name;
 
-  if (edition.completed) {
-    els.statusPill.textContent = 'Applications complete';
-    els.statusPill.className = 'pill done';
-    els.tallyLabel.textContent = `All ${edition.max_batches * edition.batch_size} spots filled for this edition.`;
+    if (edition.banner_url) {
+      els.banner.src = edition.banner_url;
+      els.banner.style.display = 'block';
+      updateOgImage(edition.banner_url);
+    }
+
+    const { count } = await supabaseClient
+      .from('registrations')
+      .select('id', { count: 'exact', head: true })
+      .eq('edition_id', edition.id)
+      .eq('batch_number', edition.current_batch);
+
+    const filled = count || 0;
+    renderTally(filled, edition.batch_size);
+
+    if (edition.completed) {
+      els.statusPill.textContent = 'Applications complete';
+      els.statusPill.className = 'pill done';
+      els.tallyLabel.textContent = `All ${edition.max_batches * edition.batch_size} spots filled for this edition.`;
+      els.submitBtn.disabled = true;
+      els.submitBtn.textContent = 'Registration complete';
+      els.regCard.style.display = 'none';
+      els.waitlistCard.style.display = 'none';
+    } else if (!edition.is_open) {
+      els.statusPill.textContent = `Batch ${edition.current_batch} closed`;
+      els.statusPill.className = 'pill closed';
+      els.tallyLabel.textContent = 'This batch is full. Please check back when the next batch opens.';
+      els.submitBtn.disabled = true;
+      els.submitBtn.textContent = 'Batch closed — check back soon';
+      els.regCard.style.display = 'none';
+      els.waitlistCard.style.display = 'block';
+    } else {
+      els.statusPill.textContent = `Batch ${edition.current_batch} of ${edition.max_batches} — open`;
+      els.statusPill.className = 'pill open';
+      els.tallyLabel.textContent = `${filled} of ${edition.batch_size} spots taken in this batch.`;
+      els.submitBtn.disabled = false;
+      els.submitBtn.textContent = 'Register & get my ticket';
+      els.regCard.style.display = 'block';
+      els.waitlistCard.style.display = 'none';
+    }
+  } catch (err) {
+    // Network/config error (e.g. missing config.js, paused project) — show
+    // something instead of leaving the page stuck on "Loading…" forever.
+    els.editionName.textContent = 'Could not load — please refresh';
+    els.statusPill.textContent = 'Error';
     els.submitBtn.disabled = true;
-    els.submitBtn.textContent = 'Registration complete';
-    els.regCard.style.display = 'none';
-    els.waitlistCard.style.display = 'none';
-  } else if (!edition.is_open) {
-    els.statusPill.textContent = `Batch ${edition.current_batch} closed`;
-    els.statusPill.className = 'pill closed';
-    els.tallyLabel.textContent = 'This batch is full. Please check back when the next batch opens.';
-    els.submitBtn.disabled = true;
-    els.submitBtn.textContent = 'Batch closed — check back soon';
-    els.regCard.style.display = 'none';
-    els.waitlistCard.style.display = 'block';
-  } else {
-    els.statusPill.textContent = `Batch ${edition.current_batch} of ${edition.max_batches} — open`;
-    els.statusPill.className = 'pill open';
-    els.tallyLabel.textContent = `${filled} of ${edition.batch_size} spots taken in this batch.`;
-    els.submitBtn.disabled = false;
-    els.submitBtn.textContent = 'Register & get my ticket';
-    els.regCard.style.display = 'block';
-    els.waitlistCard.style.display = 'none';
+    console.error('loadEdition failed:', err);
   }
 }
 
@@ -149,6 +186,7 @@ els.form.addEventListener('submit', async (e) => {
         full_name: document.getElementById('full_name').value.trim(),
         email: document.getElementById('email').value.trim(),
         phone: document.getElementById('phone').value.trim(),
+        department: els.department.value.trim(),
         photo_url: photoUrl,
         website: els.website.value
       })
@@ -177,11 +215,13 @@ els.form.addEventListener('submit', async (e) => {
       showMessage(`You're registered! Your ticket is downloading now. Keep it safe — you'll need it at the door.<br>${codeLine}`, 'success');
       attachCopyButtons();
       els.form.reset();
+      els.photoPreview.style.display = 'none';
     } else {
       const body = await res.json();
       showMessage(`${body.warning} Your ticket code is <strong>${body.ticket_code}</strong> — save it. <button type="button" class="copy-code-btn" data-code="${body.ticket_code}">Copy code</button>`, 'success');
       attachCopyButtons();
       els.form.reset();
+      els.photoPreview.style.display = 'none';
     }
 
     await loadEdition();
