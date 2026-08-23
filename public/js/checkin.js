@@ -20,14 +20,19 @@ function showLoginMsg(text, type) {
 }
 
 async function checkSession() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) {
-    loginCard.style.display = 'none';
-    scanArea.style.display = 'block';
-    startScanner();
-  } else {
-    loginCard.style.display = 'block';
-    scanArea.style.display = 'none';
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      loginCard.style.display = 'none';
+      scanArea.style.display = 'block';
+      startScanner();
+    } else {
+      loginCard.style.display = 'block';
+      scanArea.style.display = 'none';
+    }
+  } catch (err) {
+    showLoginMsg('Could not reach Supabase — check that /js/config.js is deployed and your keys are correct.', 'error');
+    console.error('checkSession failed:', err);
   }
 }
 
@@ -135,7 +140,7 @@ async function processCode(code) {
 
     renderResult('good', `
       <h2>Welcome, ${registration.full_name.split(' ')[0]}!</h2>
-      <p><strong>${registration.full_name}</strong> · Batch ${registration.batch_number} · ${registration.email}</p>
+      <p><strong>${registration.full_name}</strong> · ${registration.department || 'No dept.'} · Batch ${registration.batch_number} · ${registration.email}</p>
       <p class="hint">Checked in just now.</p>
     `);
   } finally {
