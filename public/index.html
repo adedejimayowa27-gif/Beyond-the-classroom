@@ -26,7 +26,7 @@
 
   <div class="card">
     <div class="status-row">
-      <h2 id="editionName">Loading…</h2>
+      <h2 id="editionName" class="edition-name-big">Loading…</h2>
       <span id="statusPill" class="pill">—</span>
     </div>
     <div class="tally" id="tally"></div>
@@ -44,9 +44,13 @@
       <label for="phone">Phone number</label>
       <input type="tel" id="phone" required autocomplete="tel">
 
+      <label for="department">Department</label>
+      <input type="text" id="department" required autocomplete="off" placeholder="e.g. Computer Science">
+
       <label for="photo">Your photo (for your ticket)</label>
       <input type="file" id="photo" accept="image/*">
       <div class="hint">JPG or PNG, under 5MB. Optional but recommended.</div>
+      <img id="photoPreview" class="photo-preview" alt="Your selected photo" style="display:none;">
 
       <!-- Honeypot — real visitors never see this field. Bots that fill
            every input on the page will fill it, and we quietly ignore them. -->
