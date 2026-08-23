@@ -18,7 +18,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body' }) };
   }
 
-  const { edition_id, full_name, email, phone, photo_url, website } = payload;
+  const { edition_id, full_name, email, phone, department, photo_url, website } = payload;
 
   // Honeypot: real applicants never see or fill this hidden field, so if
   // it's non-empty this is almost certainly a bot. Pretend it worked so
@@ -31,7 +31,7 @@ exports.handler = async (event) => {
     };
   }
 
-  if (!edition_id || !full_name || !email || !phone) {
+  if (!edition_id || !full_name || !email || !phone || !department) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please fill in all required fields.' }) };
   }
 
@@ -41,7 +41,8 @@ exports.handler = async (event) => {
       p_full_name: full_name,
       p_email: email,
       p_phone: phone,
-      p_photo_url: photo_url || null
+      p_photo_url: photo_url || null,
+      p_department: department
     })
     .single();
 
