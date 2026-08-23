@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond The Classroom with MayorCity — Registration</title>
+<meta name="description" content="Register for this month's edition of Beyond The Classroom with MayorCity. Spots open in batches of 10 — grab yours and get your ticket instantly.">
+<meta name="theme-color" content="#1b2a4a">
+<meta property="og:title" content="Beyond The Classroom with MayorCity — Registration">
+<meta property="og:description" content="Register for this month's edition and get your ticket instantly.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og-banner.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231b2a4a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23c89b3c' font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Monthly Edition</div>
+    <h1>Beyond The Classroom</h1>
+    <p>with MayorCity</p>
+  </header>
+
+  <img id="banner" class="banner" alt="Edition banner" style="display:none;">
+
+  <div class="card">
+    <div class="status-row">
+      <h2 id="editionName">Loading…</h2>
+      <span id="statusPill" class="pill">—</span>
+    </div>
+    <div class="tally" id="tally"></div>
+    <div class="tally-label" id="tallyLabel"></div>
+  </div>
+
+  <div class="card" id="regCard">
+    <form id="regForm">
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" required autocomplete="name">
+
+      <label for="email">Email address</label>
+      <input type="email" id="email" required autocomplete="email">
+
+      <label for="phone">Phone number</label>
+      <input type="tel" id="phone" required autocomplete="tel">
+
+      <label for="photo">Your photo (for your ticket)</label>
+      <input type="file" id="photo" accept="image/*">
+      <div class="hint">JPG or PNG, under 5MB. Optional but recommended.</div>
+
+      <!-- Honeypot — real visitors never see this field. Bots that fill
+           every input on the page will fill it, and we quietly ignore them. -->
+      <div style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
+        <label for="website">Leave this field empty</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">Register &amp; get my ticket</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <div class="card" id="waitlistCard" style="display:none;">
+    <h2 style="font-size:16px; margin:0 0 6px;">Join the waitlist</h2>
+    <p class="hint" style="margin-top:0;">This batch is full, but we'll have your details ready for the moment the next one opens.</p>
+    <form id="waitlistForm">
+      <label for="wl_name">Full name</label>
+      <input type="text" id="wl_name" required autocomplete="name">
+      <label for="wl_email">Email address</label>
+      <input type="email" id="wl_email" required autocomplete="email">
+      <label for="wl_phone">Phone number</label>
+      <input type="tel" id="wl_phone" required autocomplete="tel">
+      <button type="submit" class="btn-secondary" style="width:100%; margin-top:22px;" id="waitlistBtn">Join waitlist</button>
+    </form>
+    <div id="waitlistMessage"></div>
+  </div>
+
+  <p class="footer-note">Already registered but missed your download? <a href="/lookup.html">Re-download your ticket</a>.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/register.js"></script>
+</body>
+</html>

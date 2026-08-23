@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Re-download your ticket — Beyond The Classroom</title>
+<meta name="description" content="Look up your Beyond The Classroom with MayorCity ticket by code and re-download it.">
+<meta name="theme-color" content="#1b2a4a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231b2a4a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23c89b3c' font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Beyond The Classroom</div>
+    <h1>Find my ticket</h1>
+    <p>Enter the ticket code you received when you registered.</p>
+  </header>
+
+  <div class="card">
+    <form id="lookupForm">
+      <label for="code">Ticket code</label>
+      <input type="text" id="code" placeholder="BTC-XXXXXXXX" required style="text-transform:uppercase;">
+      <button type="submit" class="btn-primary" id="lookupBtn">Download ticket</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <p class="footer-note"><a href="/">Back to registration</a></p>
+</div>
+
+<script>
+const codeInput = document.getElementById('code');
+const lookupForm = document.getElementById('lookupForm');
+const lookupBtn = document.getElementById('lookupBtn');
+
+// If arrived via a link like /lookup.html?code=BTC-XXXXXXXX, prefill and
+// auto-submit so a scanned/tapped link goes straight to the download.
+const params = new URLSearchParams(window.location.search);
+const prefillCode = params.get('code');
+if (prefillCode) {
+  codeInput.value = prefillCode.toUpperCase();
+}
+
+lookupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const code = codeInput.value.trim();
+  const msg = document.getElementById('message');
+  msg.innerHTML = '';
+  lookupBtn.disabled = true;
+  lookupBtn.textContent = 'Looking up…';
+
+  try {
+    const res = await fetch('/api/ticket?code=' + encodeURIComponent(code));
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      msg.innerHTML = `<div class="message error">${body.error || 'Ticket not found.'}</div>`;
+      return;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ticket-${code}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    msg.innerHTML = `<div class="message success">Ticket downloading now.</div>`;
+  } finally {
+    lookupBtn.disabled = false;
+    lookupBtn.textContent = 'Download ticket';
+  }
+});
+
+if (prefillCode) {
+  lookupForm.requestSubmit();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Beyond The Classroom with MayorCity</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231b2a4a'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23c89b3c' font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Admin</div>
+    <h1>Beyond The Classroom</h1>
+    <p>Manage editions &amp; registration batches</p>
+  </header>
+
+  <div id="loginCard" class="card">
+    <form id="loginForm">
+      <label for="loginEmail">Admin email</label>
+      <input type="text" id="loginEmail" required>
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" required>
+      <button type="submit" class="btn-primary">Sign in</button>
+    </form>
+    <div id="loginMessage"></div>
+  </div>
+
+  <div id="adminArea" style="display:none;">
+    <div class="card">
+      <div class="status-row">
+        <h2 style="font-size:16px;">Quick links</h2>
+        <button id="logoutBtn" class="btn-secondary" style="width:auto;">Sign out</button>
+      </div>
+      <div class="edition-actions">
+        <a href="/checkin.html" class="btn-primary" style="text-align:center; text-decoration:none; margin-top:0; line-height:1.4;">Open door check-in scanner</a>
+      </div>
+    </div>
+
+    <div class="card" id="statsCard">
+      <h2 style="font-size:16px; margin:0 0 6px;">At a glance</h2>
+      <div id="statsRow" class="hint">Loading…</div>
+    </div>
+
+    <div class="card">
+      <div class="status-row">
+        <h2>Create new monthly edition</h2>
+      </div>
+      <form id="editionForm">
+        <label for="editionName">Edition name</label>
+        <input type="text" id="editionName" placeholder="e.g. Beyond The Classroom — August 2026" required>
+        <label for="editionBanner">Banner picture</label>
+        <input type="file" id="editionBanner" accept="image/*" required>
+        <button type="submit" class="btn-primary">Create edition (opens Batch 1 automatically)</button>
+      </form>
+      <div id="editionMessage"></div>
+    </div>
+
+    <div class="card">
+      <h2>Editions</h2>
+      <div id="editionsList">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>
