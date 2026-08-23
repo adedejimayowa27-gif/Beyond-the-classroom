@@ -18,7 +18,18 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body' }) };
   }
 
-  const { edition_id, full_name, email, phone, photo_url } = payload;
+  const { edition_id, full_name, email, phone, photo_url, website } = payload;
+
+  // Honeypot: real applicants never see or fill this hidden field, so if
+  // it's non-empty this is almost certainly a bot. Pretend it worked so
+  // the bot doesn't keep retrying, but never touch the database.
+  if (website) {
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ warning: 'Registered.', ticket_code: 'BTC-00000000' })
+    };
+  }
 
   if (!edition_id || !full_name || !email || !phone) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please fill in all required fields.' }) };
@@ -42,6 +53,8 @@ exports.handler = async (event) => {
       message = 'Registration for this edition is complete — all spots have been filled.';
     } else if (error.message.includes('EDITION_NOT_FOUND')) {
       message = 'This program is not open for registration right now.';
+    } else if (error.message.includes('DUPLICATE_EMAIL')) {
+      message = 'That email address is already registered for this edition. Check /lookup.html to re-download your ticket.';
     }
     return { statusCode: 400, body: JSON.stringify({ error: message }) };
   }
@@ -58,7 +71,8 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="ticket-${registration.ticket_code}.pdf"`
+        'Content-Disposition': `attachment; filename="ticket-${registration.ticket_code}.pdf"`,
+        'X-Ticket-Code': registration.ticket_code
       },
       body: Buffer.from(pdfBytes).toString('base64'),
       isBase64Encoded: true
