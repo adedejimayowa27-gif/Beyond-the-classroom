@@ -85,6 +85,13 @@ header.masthead p {
   font-size: 16px;
   margin: 0;
 }
+.status-row h2.edition-name-big {
+  font-size: 24px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+}
 
 .pill {
   display: inline-block;
@@ -152,6 +159,16 @@ input[type="file"] {
 }
 
 .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.photo-preview {
+  display: block;
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 2px solid var(--paper-line);
+  margin-top: 12px;
+}
 
 button {
   cursor: pointer;
