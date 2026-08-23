@@ -1,4 +1,5 @@
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+const QRCode = require('qrcode');
 
 const INK = rgb(0.106, 0.164, 0.290);   // deep civic navy
 const GOLD = rgb(0.784, 0.608, 0.235);  // brass gold accent
@@ -59,14 +60,28 @@ async function generateTicketPdf({ edition, registration }) {
   });
 
   // Counterfoil (right side)
-  page.drawText('ADMIT ONE', { x: 484, y: 250, size: 11, font: bold, color: INK });
-  page.drawText('TICKET CODE', { x: 484, y: 150, size: 8, font: bold, color: rgb(0.4, 0.4, 0.42) });
-  page.drawText(registration.ticket_code, { x: 484, y: 132, size: 14, font: bold, color: INK });
+  page.drawText('ADMIT ONE', { x: 484, y: 268, size: 11, font: bold, color: INK });
+
+  // QR code — scanned at the door to check the guest in instantly.
+  try {
+    const qrDataUrl = await QRCode.toDataURL(registration.ticket_code, {
+      margin: 0,
+      color: { dark: '#1b2a4a', light: '#00000000' }
+    });
+    const qrBytes = Buffer.from(qrDataUrl.split(',')[1], 'base64');
+    const qrImg = await pdfDoc.embedPng(qrBytes);
+    page.drawImage(qrImg, { x: 486, y: 158, width: 92, height: 92 });
+  } catch (e) {
+    // If the QR can't be generated, the ticket code below still works at the door.
+  }
+
+  page.drawText('TICKET CODE', { x: 484, y: 138, size: 8, font: bold, color: rgb(0.4, 0.4, 0.42) });
+  page.drawText(registration.ticket_code, { x: 484, y: 120, size: 13, font: bold, color: INK });
   page.drawText(`Batch ${registration.batch_number} of ${edition.max_batches}`, {
-    x: 484, y: 100, size: 9, font: regular, color: rgb(0.35, 0.35, 0.38)
+    x: 484, y: 98, size: 9, font: regular, color: rgb(0.35, 0.35, 0.38)
   });
-  page.drawText('Present this ticket (digital', { x: 484, y: 50, size: 7, font: regular, color: MUTED });
-  page.drawText('or printed) at the entrance.', { x: 484, y: 40, size: 7, font: regular, color: MUTED });
+  page.drawText('Scan the QR code or show this', { x: 484, y: 50, size: 7, font: regular, color: MUTED });
+  page.drawText('code at the entrance.', { x: 484, y: 40, size: 7, font: regular, color: MUTED });
 
   return pdfDoc.save();
 }
