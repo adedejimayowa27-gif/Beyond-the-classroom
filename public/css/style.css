@@ -56,12 +56,13 @@ header.masthead p {
 
 .banner {
   width: 100%;
-  aspect-ratio: 16 / 7;
+  height: 340px;
   object-fit: cover;
   border-radius: var(--radius);
   border: 1px solid var(--paper-line);
   margin-bottom: 20px;
   background: var(--ink-soft);
+  box-shadow: 0 8px 24px rgba(27, 42, 74, 0.12);
 }
 
 .card {
@@ -86,10 +87,11 @@ header.masthead p {
   margin: 0;
 }
 .status-row h2.edition-name-big {
-  font-size: 24px;
+  flex-basis: 100%;
+  font-size: 32px;
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--ink);
 }
 
@@ -162,12 +164,14 @@ input[type="file"] {
 
 .photo-preview {
   display: block;
-  width: 220px;
-  height: 220px;
+  width: 100%;
+  max-width: 280px;
+  height: 280px;
   object-fit: cover;
   border-radius: var(--radius);
   border: 2px solid var(--paper-line);
   margin-top: 12px;
+  box-shadow: 0 6px 18px rgba(27, 42, 74, 0.1);
 }
 
 button {
