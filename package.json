@@ -5,6 +5,7 @@
   "description": "Registration + PDF ticketing site for Beyond The Classroom with MayorCity",
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4"
   }
 }
