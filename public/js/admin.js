@@ -36,14 +36,19 @@ function downloadCsv(filename, rows) {
 }
 
 async function checkSession() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) {
-    loginCard.style.display = 'none';
-    adminArea.style.display = 'block';
-    loadEditions();
-  } else {
-    loginCard.style.display = 'block';
-    adminArea.style.display = 'none';
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      loginCard.style.display = 'none';
+      adminArea.style.display = 'block';
+      loadEditions();
+    } else {
+      loginCard.style.display = 'block';
+      adminArea.style.display = 'none';
+    }
+  } catch (err) {
+    showLoginMsg('Could not reach Supabase — check that /js/config.js is deployed and your keys are correct.', 'error');
+    console.error('checkSession failed:', err);
   }
 }
 
@@ -190,7 +195,7 @@ async function loadEditions() {
         row.className = 'reg-row';
         const checkedBadge = r.checked_in ? '<span class="badge-checked">Checked in</span>' : '';
         row.innerHTML = `
-          <span>${r.full_name} · Batch ${r.batch_number} ${checkedBadge}</span>
+          <span>${r.full_name} · ${r.department || 'No dept.'} · Batch ${r.batch_number} ${checkedBadge}</span>
           <span class="code">${r.ticket_code}</span>
           <button type="button" class="btn-danger reg-delete-btn" style="width:auto; padding:4px 10px; font-size:12px;" title="Remove this registration">Remove</button>
         `;
@@ -214,8 +219,8 @@ async function loadEditions() {
     }
 
     div.querySelector('.export-regs-btn').onclick = () => {
-      const rows = [['Full name', 'Email', 'Phone', 'Batch', 'Ticket code', 'Checked in', 'Checked in at', 'Registered at']];
-      (regs || []).forEach(r => rows.push([r.full_name, r.email, r.phone, r.batch_number, r.ticket_code, r.checked_in ? 'yes' : 'no', r.checked_in_at || '', r.created_at]));
+      const rows = [['Full name', 'Email', 'Phone', 'Department', 'Batch', 'Ticket code', 'Checked in', 'Checked in at', 'Registered at']];
+      (regs || []).forEach(r => rows.push([r.full_name, r.email, r.phone, r.department || '', r.batch_number, r.ticket_code, r.checked_in ? 'yes' : 'no', r.checked_in_at || '', r.created_at]));
       downloadCsv(`${edition.name.replace(/[^a-z0-9]+/gi, '-')}-registrations.csv`, rows);
     };
     div.querySelector('.export-waitlist-btn').onclick = () => {
