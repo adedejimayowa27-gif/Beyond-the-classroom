@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Registration + PDF ticketing site for Beyond The Classroom with MayorCity",
+  "engines": { "node": "20.x" },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
     "pdf-lib": "^1.17.1",
